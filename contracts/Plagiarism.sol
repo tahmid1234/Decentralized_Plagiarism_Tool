@@ -71,6 +71,7 @@ contract Plagiarism {
   //uint public  n_code;
   //uint public o_code;
 
+
   bytes32 public c;
   bytes32 public d;
   uint public st_count = 0;
@@ -104,6 +105,8 @@ contract Plagiarism {
 
   }
   
+ 
+  
   function match_equation() internal returns(uint){
       uint similarity;
       
@@ -122,7 +125,10 @@ contract Plagiarism {
       
       return similarity;
   }
-     function match_statement() internal returns(uint){
+  
+ 
+
+   function match_statement() internal returns(uint){
        uint count_st_similarity;
       for(uint j = uni_st_count;j<st_count;j++){
           for(uint k;k<uni_st_count;k++){
@@ -147,14 +153,162 @@ contract Plagiarism {
       
       return count_st_similarity;
   }
-  
-   function convertToBytes( string memory code_string) internal{
+        
+      function convertToBytes( string memory code_string) internal{
          bytes  memory codeBytes = bytes(code_string);
         //bytes memory result = new bytes(endIndex-startIndex);
     
         perse_statements(codeBytes);
     }
+   bytes32 public  var_name;
   
+    function perse_statements( bytes memory codeBytes) internal{
+       
+        uint  length = codeBytes.length;
+        
+        statement memory st;
+        bool var_flag = false;
+        
+        uint var_count = 0;
+        uint stat = 5;
+       
+        uint eqn_var_count;
+        uint eqn_sym_count;
+        
+        for(uint i;i<length;i++){
+        //space
+        if(codeBytes[i] == 0x20){
+              
+                 continue;
+        }
+        //semi colon -> end of line
+        if(codeBytes[i] == ";" || codeBytes[i] == "{" || codeBytes[i] == "}"){
+          if(stat==1){
+              st.total_var++;
+              st_map[st_count++] = st;
+               var_ref[var_name] = st.keyWord;
+               st.total_var =0;
+                var_name = 0x00;
+
+          }
+          else if(stat == 5)
+          {
+            eqn_var[eqn_count][eqn_var_count++] = var_ref[var_name];
+            var_name = 0x00;
+            eqn_map[eqn_count++] = false;
+              
+             
+             
+          }
+           var_flag = false;
+           eqn_sym_count = 0;
+           eqn_var_count = 0;
+           stat = 5;
+           var_count = 0;
+           continue;
+        
+        }
+        
+     
+        
+        //main key word
+        if(codeBytes[i] == 0x6D && i+3<length){
+                if(codeBytes[i+1]==0x61 && codeBytes[i+2]==0x69 && codeBytes[i+3]==0x6E){
+                    st.keyWord = keyword_map["main"];
+                    i = i+3;
+                    stat =2;
+                }
+            }
+        //scanf    
+        else if(codeBytes[i] == 0x73 && i+4<length){
+                if(codeBytes[i+1]==0x63 && codeBytes[i+2]==0x61 && codeBytes[i+3]==0x6E && codeBytes[i+4]==0x66 ){
+                    st.keyWord = keyword_map["scanf"];
+                    i = i+4;
+                    stat = 3;
+                    
+                }
+            }
+        //printf
+        else if(codeBytes[i] == 0x70 && i+5<length){
+                if(codeBytes[i+1]==0x72 && codeBytes[i+2]==0x69 && codeBytes[i+3]==0x6E && codeBytes[i+4]==0x74 && codeBytes[i+5]==0x66){
+                    st.keyWord = keyword_map["printf"];
+                    i = i+5;
+                    stat = 4;
+                    
+                }
+            }
+        //int
+         else if(codeBytes[i] == 0x69 && i+2<length){
+                //n_code = 113;
+                if(codeBytes[i+1]==0x6E && codeBytes[i+2]==0x74 ){
+                    st.keyWord = keyword_map["int"];
+                    i = i+2;
+                    var_flag = true;
+                    //n_code = 111;
+                    stat = 1;
+                }
+            }
+        //data type - float
+        else if(codeBytes[i] == 0x66 && i+4<length){
+                //n_code = 113;
+                if(codeBytes[i+1]==0x6C && codeBytes[i+2]==0x6F && codeBytes[i+3]==0x61 && codeBytes[i+4]==0x74 ){
+                    st.keyWord = keyword_map["float"];
+                    i = i+4;
+                    var_flag = true;
+                    //n_code = 235;
+                    stat = 1;
+                }
+            }
+        else if(var_flag  ){
+             
+            if(codeBytes[i] != 0x2C ){
+                 c = codeBytes[i];
+                var_name |= bytes32(codeBytes[i] & 0xFF) >> (var_count*8);
+                var_count++;
+               
+            }
+            else{
+                var_ref[var_name] = st.keyWord;
+                var_count = 0;
+                 st.total_var++;
+                 var_name = 0x00;
+                d =  0x000000000000000000000000000000000000000000000000000000000000002C;
+        }
+        
+        }
+        
+        else if(stat ==5) {
+            if(codeBytes[i]>0x60 && codeBytes[i] < 0x7B ){
+                 c = codeBytes[i];
+                var_name |= bytes32(codeBytes[i] & 0xFF) >> (var_count*8);
+                 var_count++;
+               
+            }
+            else{
+                eqn_var[eqn_count][eqn_var_count++] = var_ref[var_name];
+                var_name = 0x00;
+                //n_code = 55;
+                var_count = 0;
+                if(codeBytes[i] == 0x2B)
+                        eqn_sym[eqn_count][eqn_sym_count++] = symbol_map["+"] ;
+                    else if(codeBytes[i] == 0x2D)
+                           eqn_sym[eqn_count][eqn_sym_count++]= symbol_map["-"];
+                    else if(codeBytes[i] == 0x3D)
+                          eqn_sym[eqn_count][eqn_sym_count++] = symbol_map["="];
+            }
+            
+            
+            
+            stat = 5;
+            
+        }
+        
+        
+        
+       
+       
+    }
+    }
   
   
 }
