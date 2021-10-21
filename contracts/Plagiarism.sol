@@ -71,7 +71,38 @@ contract Plagiarism {
   //uint public  n_code;
   //uint public o_code;
 
+  bytes32 public c;
+  bytes32 public d;
+  uint public st_count = 0;
+  uint public eqn_count = 0;
+  uint public uni_st_count = 0;
+  uint public uni_eqn_count = 0;
 
+  function getSimilarity(string memory new_code, string memory unique_code)  public  returns (uint) {
+       /*uint if_count = 0;
+       uint statement_count = 0;
+      */
+       uint similarity_rate;
+       convertToBytes(unique_code);
+       uni_st_count = st_count; 
+       uni_eqn_count = eqn_count;
+       convertToBytes(new_code);
+
+       
+        similarity_rate = match_equation() + match_statement();
+        similarity_rate = similarity_rate*100;
+        
+        similarity_rate = similarity_rate/(2*(st_count- uni_st_count )+(eqn_count- uni_eqn_count ) );
+        //n_code = similarity_rate;
+   
+        uni_st_count = 0;
+        st_count = 0; 
+        uni_eqn_count = 0;
+        eqn_count = 0;
+       code_similarity = similarity_rate;
+       return similarity_rate;
+
+  }
   
   
   
