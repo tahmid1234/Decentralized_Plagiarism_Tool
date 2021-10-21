@@ -122,6 +122,31 @@ contract Plagiarism {
       
       return similarity;
   }
+     function match_statement() internal returns(uint){
+       uint count_st_similarity;
+      for(uint j = uni_st_count;j<st_count;j++){
+          for(uint k;k<uni_st_count;k++){
+              
+              if(st_map[k].status==true)
+                continue;
+              
+              if(st_map[j].keyWord == st_map[k].keyWord ){
+            
+                  count_st_similarity++;
+                  if(st_map[j].total_var==st_map[k].total_var){
+                
+                     count_st_similarity++;
+                  }
+                  st_map[k].status = true;
+                  st_map[j].status = true;
+                 
+                  break;
+              }
+          }
+      }
+      
+      return count_st_similarity;
+  }
   
   
   
