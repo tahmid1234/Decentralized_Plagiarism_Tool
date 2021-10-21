@@ -104,6 +104,25 @@ contract Plagiarism {
 
   }
   
+  function match_equation() internal returns(uint){
+      uint similarity;
+      
+      for(uint j = uni_eqn_count;j<eqn_count;j++){
+          for(uint k;k<uni_eqn_count ;k++){
+              if(eqn_map[k]== true)
+                continue;
+              if(eqn_sym[j][1] == eqn_sym[k][1] &&  eqn_var[j][0] == eqn_var[k][0]){
+                  similarity++;
+                  eqn_map[k] = true;
+                  break;
+              }
+          
+          }
+      }
+      
+      return similarity;
+  }
+  
   
   
 }
