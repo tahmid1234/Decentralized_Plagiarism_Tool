@@ -148,6 +148,13 @@ contract Plagiarism {
       return count_st_similarity;
   }
   
+   function convertToBytes( string memory code_string) internal{
+         bytes  memory codeBytes = bytes(code_string);
+        //bytes memory result = new bytes(endIndex-startIndex);
+    
+        perse_statements(codeBytes);
+    }
+  
   
   
 }
