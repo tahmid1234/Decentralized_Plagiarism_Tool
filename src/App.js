@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ethers } from 'ethers'
 
 import Plagiarism from './artifacts/contracts/Plagiarism.sol/Plagiarism.json'
-//const plagiarismAddress = "0x20321DFfacAf739399Dae0259Bbf27393bB7aC28" ;
+const plagiarismAddress = "0x20321DFfacAf739399Dae0259Bbf27393bB7aC28" ;
 
 
 function App() {
