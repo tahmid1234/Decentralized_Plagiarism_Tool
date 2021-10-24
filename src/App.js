@@ -1,9 +1,10 @@
 import './App.css';
 import { useState } from 'react';
 import { ethers } from 'ethers'
-
+import Copyright from './artifacts/contracts/Copyright.sol/Copyright.json'
 import Plagiarism from './artifacts/contracts/Plagiarism.sol/Plagiarism.json'
 const plagiarismAddress = "0x20321DFfacAf739399Dae0259Bbf27393bB7aC28" ;
+const copyrightAddress = "0x5a79171A9C3F07782fB51C56580E686Be43029fA";
 
 
 function App() {
@@ -46,6 +47,24 @@ function App() {
 
   }
 
+  async function checkCopyright() {
+    if(!newCode || !uniqueCode) return;
+
+    if (typeof window.ethereum !== 'undefined') {
+      const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
+      //await requestAccount()
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      console.log({ provider })
+      const signer = provider.getSigner()
+      const contract = new ethers.Contract(copyrightAddress, Copyright.abi, signer)
+      await contract.checkSimilarity(newCode,uniqueCode);
+      //similarity = await contract.code_similarity() ;
+      //console.log(similarity)
+      //console.log(" SIMILARI")
+    }
+
+}
+
   async function disPlaySimilarity(){
     console.log("New Code")
     console.log(newCode)
@@ -62,6 +81,22 @@ function App() {
         
   }
 
+  async function displayCopyright(){
+    console.log("New Code")
+    console.log(newCode)
+    console.log("Original Code")
+    console.log(uniqueCode)
+    const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
+        //await requestAccount()
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        console.log({ provider })
+        const signer = provider.getSigner()
+        const contract = new ethers.Contract(copyrightAddress, Copyright.abi, signer)
+    similarity = await contract.similarity() ;
+    console.log(similarity.toNumber()+"%")
+        
+  }
+
  
 
   
@@ -71,8 +106,8 @@ function App() {
         
         <textarea  onChange={e => setNewCode(e.target.value)} placeholder="New code" />
         <textarea  onChange={e => setUniqueCode(e.target.value)} placeholder="Original Code" />
-        <button onClick={getSimilarity}>Check Similarity</button>
-        <button onClick={disPlaySimilarity}>Display Similarity</button>
+        <button onClick={checkCopyright}>Check Similarity</button>
+        <button onClick={displayCopyright}>Display Similarity</button>
         
       </header>
     </div>

@@ -3,6 +3,8 @@
 /* eslint-disable */
 export type { ERC20 } from "./ERC20";
 export type { IERC20 } from "./IERC20";
+export type { Copyright } from "./Copyright";
+export type { IPlagiarism } from "./IPlagiarism";
 export type { Greeter } from "./Greeter";
 export type { IGreeter } from "./IGreeter";
 export type { Iprs } from "./Iprs";
@@ -12,6 +14,8 @@ export type { Token } from "./Token";
 
 export { ERC20__factory } from "./factories/ERC20__factory";
 export { IERC20__factory } from "./factories/IERC20__factory";
+export { Copyright__factory } from "./factories/Copyright__factory";
+export { IPlagiarism__factory } from "./factories/IPlagiarism__factory";
 export { Greeter__factory } from "./factories/Greeter__factory";
 export { IGreeter__factory } from "./factories/IGreeter__factory";
 export { Iprs__factory } from "./factories/Iprs__factory";

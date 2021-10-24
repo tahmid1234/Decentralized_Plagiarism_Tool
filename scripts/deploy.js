@@ -22,19 +22,24 @@ async function main() {
   //const IPRS = await hre.ethers.getContractFactory("Iprs");
   //const iprs = await IPRS.deploy();
 
-  const Plagiarism = await hre.ethers.getContractFactory("Plagiarism");
-  const plagiarism = await Plagiarism.deploy();
+  //const Plagiarism = await hre.ethers.getContractFactory("Plagiarism");
+  //const plagiarism = await Plagiarism.deploy();
+
+  const Copyright = await hre.ethers.getContractFactory("Copyright");
+  const copyright = await Copyright.deploy();
   
   //await greeter.deployed();
   //await token.deployed();
   //await iprs.deployed();
-  await plagiarism.deployed();
+  await copyright.deployed();
+  //await plagiarism.deployed();
 
 
   //console.log("Greeter deployed to:", greeter.address);
   //console.log("Token deployed to:", token.address);
   //console.log("IPRS deployed to:", iprs.address);
-  console.log("Plagiarism deployed to:", plagiarism.address);
+  //console.log("Plagiarism deployed to:", plagiarism.address);
+  console.log("Copyright deployed to:", copyright.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

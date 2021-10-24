@@ -79,7 +79,7 @@ contract Plagiarism {
   uint public uni_st_count = 0;
   uint public uni_eqn_count = 0;
 
-  function getSimilarity(string memory new_code, string memory unique_code)  public  returns (uint) {
+  function getSimilarity(string memory new_code, string memory unique_code)  external  returns (uint) {
        /*uint if_count = 0;
        uint statement_count = 0;
       */
